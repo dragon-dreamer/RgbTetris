@@ -1,0 +1,53 @@
+﻿<!-- Copyright 2016 Denis T (https://github.com/dragon-dreamer / dragondreamer [ @ ] live.com) -->
+<!-- SPDX-License-Identifier: GPL-3.0 -->
+<UserControl x:Class="LedMatrixDebugConsole.Led"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             x:Name="LedControl"
+             xmlns:local="clr-namespace:LedMatrixDebugConsole"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <local:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
+    </UserControl.Resources>
+    <Button Command="{Binding OpenColorPickerCommand, ElementName=LedControl}">
+        <Button.Template>
+            <ControlTemplate TargetType="Button">
+                <Grid>
+                    <Ellipse x:Name="ContentEllipse" Stroke="Black" StrokeThickness="2"
+                             Fill="{Binding Path=LightColor.Value, ElementName=LedControl, Converter={StaticResource ColorToBrushConverter}}">
+                    </Ellipse>
+                    <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                    <Popup x:Name="ColorPopup" IsOpen="{Binding IsPopupOpen, ElementName=LedControl}" StaysOpen="False">
+                        <xctk:ColorPicker SelectedColor="{Binding Path=LightColor.Value, ElementName=LedControl, Mode=TwoWay}"
+                                          UsingAlphaChannel="False" DisplayColorAndName="True"
+                                          StandardColors="{Binding ColorList, ElementName=LedControl}" />
+                    </Popup>
+                </Grid>
+
+                <ControlTemplate.Triggers>
+                    <EventTrigger RoutedEvent="MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever" TargetName="ContentEllipse"
+                                            TargetProperty="(Stroke).(SolidColorBrush.Color)">
+                                <ColorAnimation To="Gold" Duration="0:0:0.2" />
+                                <ColorAnimation To="Black" Duration="0:0:0.2" BeginTime="0:0:0.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard TargetName="ContentEllipse" TargetProperty="(Stroke).(SolidColorBrush.Color)">
+                                <ColorAnimation To="Black" Duration="0:0:0.1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Button.Template>
+    </Button>
+</UserControl>

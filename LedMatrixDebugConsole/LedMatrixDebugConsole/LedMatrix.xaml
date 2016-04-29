@@ -1,0 +1,30 @@
+﻿<!-- Copyright 2016 Denis T (https://github.com/dragon-dreamer / dragondreamer [ @ ] live.com) -->
+<!-- SPDX-License-Identifier: GPL-3.0 -->
+<UserControl x:Class="LedMatrixDebugConsole.LedMatrix"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             xmlns:local="clr-namespace:LedMatrixDebugConsole"
+             x:Name="LedMatrixControl"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <DataTemplate x:Key="DataTemplate_Level2">
+            <local:Led LightColor="{Binding}" Width="17" Height="17" Margin="2"></local:Led>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DataTemplate_Level1">
+            <ItemsControl ItemsSource="{Binding}" ItemTemplate="{DynamicResource DataTemplate_Level2}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <ItemsControl x:Name="MatrixContents" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
+    </Grid>
+</UserControl>

@@ -1,0 +1,12 @@
+﻿<!-- Copyright 2016 Denis T (https://github.com/dragon-dreamer / dragondreamer [ @ ] live.com) -->
+<!-- SPDX-License-Identifier: GPL-3.0 -->
+<Application x:Class="LedMatrixDebugConsole.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <BitmapImage x:Key="InformationIcon" UriSource="resources/information.png" />
+        <BitmapImage x:Key="WarningIcon" UriSource="resources/warning.png" />
+        <BitmapImage x:Key="ErrorIcon" UriSource="resources/error.png" />
+    </Application.Resources>
+</Application>
