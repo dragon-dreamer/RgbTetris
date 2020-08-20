@@ -84,7 +84,7 @@ void effect::marquee_P(const char* text, direction dir, uint8_t text_shift,
 	uint16_t delay)
 {
 	char symbol;
-	while(symbol = pgm_read_byte(text++))
+	while((symbol = pgm_read_byte(text++)))
 		marquee_internal(symbol, dir, text_shift, delay, !pgm_read_byte(text));
 }
 

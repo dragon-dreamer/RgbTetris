@@ -61,4 +61,27 @@ public:
 	
 	///Fast integer square root
 	static uint16_t isqrt(uint16_t n);
+	
+	static constexpr uint16_t round_to_power_of_2(uint16_t value)
+	{
+		--value;
+		value |= value >> 1;
+		value |= value >> 2;
+		value |= value >> 4;
+		value |= value >> 8;
+		++value;
+		return value;
+	}
+	
+	template<bool B, typename T, typename F>
+	struct conditional { using type = T; };
+	
+	template<typename T, typename F>
+	struct conditional<false, T, F> { using type = F; };
+	
+	template<bool B, typename T, typename F>
+	using conditional_t = typename conditional<B, T, F>::type;
+	
+	template<uint8_t MatrixWidth, uint8_t MatrixHeight>
+	using smallest_coord = conditional_t<(MatrixWidth > 16 || MatrixHeight > 16), coord, packed_coord>;
 };

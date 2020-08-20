@@ -17,16 +17,21 @@
 #include "util.h"
 #include "ws2812_matrix.h"
 
+namespace
+{
+constexpr uint8_t vertical_text_shift = ws2812_matrix::height > 16 ? 9 : 4;
+} //namespace
+
 void game::intro()
 {
 	ws2812_matrix::clear();
 	number_display::output_number(0);
 	
-	effect::marquee_P(PSTR("3"), effect::direction::left, 4, 200);
+	effect::marquee_P(PSTR("3"), effect::direction::left, vertical_text_shift, 200);
 	util::delay(1000);
-	effect::marquee_P(PSTR("2"), effect::direction::right, 4, 200);
+	effect::marquee_P(PSTR("2"), effect::direction::right, vertical_text_shift, 200);
 	util::delay(1000);
-	effect::marquee_P(PSTR("1"), effect::direction::left, 4, 200);
+	effect::marquee_P(PSTR("1"), effect::direction::left, vertical_text_shift, 200);
 	ws2812_matrix::clear();
 	buttons::flush_pressed();
 }
@@ -35,7 +40,7 @@ void game::end(uint32_t score, game_id id)
 {
 	ws2812_matrix::clear();
 	
-	effect::marquee_P(PSTR("GAME OVER!"), effect::direction::left, 4, 250);
+	effect::marquee_P(PSTR("GAME OVER!"), effect::direction::left, vertical_text_shift, 250);
 	util::delay(1000);
 	
 	char buf[24];
@@ -56,7 +61,7 @@ void game::end(uint32_t score, game_id id)
 		strcat(buf, score_buf);
 	}
 	
-	effect::marquee(buf, effect::direction::left, 4, 200);
+	effect::marquee(buf, effect::direction::left, vertical_text_shift, 200);
 	ws2812_matrix::clear();
 	buttons::flush_pressed();
 }
@@ -71,7 +76,8 @@ bool interruptible_demo()
 	int8_t speed_x = -8 - rand() % 9;
 	int8_t speed_y = speed_x;
 	uint8_t wheel = 0;
-	queue<16, util::packed_coord> pixel_queue;
+	using smallest_coord = ws2812_matrix::smallest_coord;
+	queue<16, smallest_coord> pixel_queue;
 	uint8_t pixel_x, pixel_y;
 	color::rgb rgb;
 	uint8_t max_brightness = options::get_max_brightness();
@@ -120,10 +126,10 @@ bool interruptible_demo()
 		
 		if(pixel_queue.full())
 		{
-			util::packed_coord coord;
+			smallest_coord coord;
 			if(pixel_queue.pop_front(coord))
 			{
-				util::packed_coord next_coord;
+				smallest_coord next_coord;
 						
 				bool clear = true;
 				uint8_t i = 0;

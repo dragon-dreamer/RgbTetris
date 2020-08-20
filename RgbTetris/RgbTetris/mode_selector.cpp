@@ -61,7 +61,7 @@ color::rgb letter_color { 0, 0, 0 };
 bool need_redraw = false;
 uint8_t rgb_wheel_pos = 0;
 
-constexpr uint8_t text_height = 7;
+constexpr uint8_t text_height = ws2812_matrix::height > 16 ? 12 : 7;
 constexpr uint8_t min_color_component_brightness = 5;
 
 void init_letter_color()
@@ -79,7 +79,7 @@ void output_menu_letter(uint8_t item, bool reset)
 		init_letter_color();
 	}
 	
-	ws2812_matrix::shift_left(7, 15);
+	ws2812_matrix::shift_left(text_height, text_height + font::symbol_height);
 	
 	const char* text = reinterpret_cast<const char*>(pgm_read_word(&mode_text_table[item]));
 	const char value = pgm_read_byte(text + current_letter);
@@ -99,13 +99,16 @@ void output_menu_letter(uint8_t item, bool reset)
 const uint8_t empty_checkbox_bitmap[] PROGMEM { 0x66, 0x00, 0x7f, 0x18, 0x86, 0xe1, 0x0f };
 const uint8_t checkbox_check_bitmap[] PROGMEM { 0x44, 0xff, 0x69, 0x96 };
 
+constexpr uint8_t checkbox_offset_x = ws2812_matrix::width > 6 ? (ws2812_matrix::width - 6) / 2 : 0;
+constexpr uint8_t checkbox_offset_y = text_height - 6;
+
 void show_checkbox(bool enabled)
 {
-	bitmap::display_bitmap_P(&empty_checkbox_bitmap[0], 2, 1, 0, 0,
+	bitmap::display_bitmap_P(&empty_checkbox_bitmap[0], checkbox_offset_x, checkbox_offset_y, 0, 0,
 		color::scale_to_brightness(150, max_brightness));
 	if(enabled)
 	{
-		bitmap::display_bitmap_P(&checkbox_check_bitmap[0], 3, 2,
+		bitmap::display_bitmap_P(&checkbox_check_bitmap[0], checkbox_offset_x + 1, checkbox_offset_y + 1,
 			color::scale_to_brightness(200, max_brightness), 0, 0);
 	}
 }

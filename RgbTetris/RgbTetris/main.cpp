@@ -115,6 +115,7 @@ int main()
 	{
 		//Scroll through options: "up" and "down" buttons
 		//Select option: "right" button
+		buttons::flush_pressed();
 		auto res = mode_selector::select_mode();
 		buttons::flush_pressed();
 		switch(res)

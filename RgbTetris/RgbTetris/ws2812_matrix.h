@@ -69,4 +69,6 @@ public:
 	static void shift_right(uint8_t y_from, uint8_t y_to);
 	static void shift_up(uint8_t x_from, uint8_t x_to);
 	static void shift_down(uint8_t x_from, uint8_t x_to);
+	
+	using smallest_coord = util::smallest_coord<width, height>;
 };

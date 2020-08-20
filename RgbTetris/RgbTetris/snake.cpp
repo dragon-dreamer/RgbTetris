@@ -55,9 +55,12 @@ const game::difficulty_map difficulties[] PROGMEM = {
 	{ 50000, 255, 20 }
 };
 
-using snake_queue = queue<256, util::packed_coord>;
+using snake_coord = ws2812_matrix::smallest_coord;
 
-constexpr uint8_t max_snake_length = ws2812_matrix::width * ws2812_matrix::height;
+using snake_queue = queue<util::round_to_power_of_2(ws2812_matrix::width * ws2812_matrix::height),
+	snake_coord>;
+
+constexpr uint16_t max_snake_length = ws2812_matrix::width * ws2812_matrix::height;
 
 constexpr uint8_t food_color_change_count = 15;
 constexpr uint8_t snake_color_change_count = 5;
@@ -67,7 +70,7 @@ bool move_head(snake_queue& snake_data, uint8_t x, uint8_t y, bool pop_tail)
 {
 	if(pop_tail)
 	{
-		util::packed_coord tail;
+		snake_coord tail;
 		if(snake_data.pop_front(tail))
 			ws2812_matrix::clear_pixel(tail.x, tail.y);
 	}
@@ -124,7 +127,7 @@ void set_difficulty(uint32_t score, bool accelerometer_enabled,
 void snake_color_wave(const snake_queue& snake_data,
 	color::rgb& prev_color, color::rgb& current_color, uint16_t& snake_wave_step_count)
 {
-	util::packed_coord coord {0, 0}, prev_coord {0, 0};
+	snake_coord coord {0, 0}, prev_coord {0, 0};
 	color::rgb rgb;
 	uint8_t count = static_cast<uint8_t>(snake_data.count());
 	uint8_t step_count = util::max(max_snake_wave_steps, count);
@@ -201,7 +204,7 @@ void init(snake_queue& snake_data, direction& snake_direction)
 
 bool get_head(const snake_queue& snake_data, uint8_t& x, uint8_t& y)
 {
-	util::packed_coord head;
+	snake_coord head;
 	if(snake_data.get(head, snake_data.count() - 1))
 	{
 		x = head.x;

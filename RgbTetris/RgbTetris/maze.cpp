@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include <avr/pgmspace.h>
+#include <avr/io.h>
 
 #include "accelerometer.h"
 #include "buttons.h"
@@ -18,6 +19,10 @@
 #include "timer.h"
 #include "util.h"
 #include "ws2812_matrix.h"
+
+#ifndef RAMSIZE
+#	define RAMSIZE (RAMEND - RAMSTART + 1)
+#endif //RAMSIZE
 
 namespace
 {
@@ -50,7 +55,7 @@ struct cell
 constexpr uint16_t max_maze_size = 1225; //35*35
 using maze_data = cell[max_maze_size];
 static_assert(sizeof(maze_data) == 2450, "Incorrect maze_data size");
-static_assert(sizeof(maze_data) < RAMSIZE - 1500, "Incorrect maze_data size");
+static_assert(sizeof(maze_data) < RAMSIZE - 1500, "Too big maze_data size");
 
 struct maze_dimension
 {
@@ -548,6 +553,7 @@ const level levels[] PROGMEM = {
 constexpr uint8_t max_allowed_time_drop_hard_mode = 25;
 constexpr uint8_t max_random_passage_probability_hard_mode = 3;
 constexpr uint8_t hard_mode_max_cell_size = 2;
+constexpr uint8_t cell_size_increment = 3;
 constexpr uint8_t last_level_id = sizeof(levels) / sizeof(levels[0]) - 1;
 void load_level(uint8_t& level_id, maze_info& maze, uint8_t& score_multiplier, uint8_t max_brightness,
 	uint16_t& seconds_for_level, int16_t& exit_x, int16_t& exit_y)
@@ -567,7 +573,7 @@ void load_level(uint8_t& level_id, maze_info& maze, uint8_t& score_multiplier, u
 		info.allowed_time -= util::min<uint8_t>(level_id / 8, max_allowed_time_drop_hard_mode);
 	}
 	
-	maze.cell_size = info.cell_size + 3;
+	maze.cell_size = info.cell_size + cell_size_increment;
 	score_multiplier = info.score_multiplier;
 	
 	maze.init(info.width, info.height);
